@@ -25,9 +25,11 @@ Thumbs.db
 Desktop.ini
 
 # Compiled JavaScript & Build Outputs
-# (Uncomment app.js if app.ts compiles directly next to it)
-app.js
-app.js.map
+# TypeScript files compiled directly next to their source files
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
 dist/
 build/
 *.tsbuildinfo

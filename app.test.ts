@@ -49,31 +49,31 @@ describe('filterAndSortVideos', () => {
   test('filters videos by search term (case-insensitive)', () => {
     const result = filterAndSortVideos(mockVideos, 'typescript', 'All', 'newest');
     expect(result).toHaveLength(1);
-    expect(result[0].id).toBe('1');
+    expect(result[0]!.id).toBe('1');
   });
 
   test('filters videos by category', () => {
     const result = filterAndSortVideos(mockVideos, '', 'Vlog', 'newest');
     expect(result).toHaveLength(1);
-    expect(result[0].category).toBe('Vlog');
+    expect(result[0]!.category).toBe('Vlog');
   });
 
   test('sorts videos by most popular (views-high)', () => {
     const result = filterAndSortVideos(mockVideos, '', 'All', 'views-high');
-    expect(result[0].views).toBe(500);
-    expect(result[1].views).toBe(300);
-    expect(result[2].views).toBe(100);
+    expect(result[0]!.views).toBe(500);
+    expect(result[1]!.views).toBe(300);
+    expect(result[2]!.views).toBe(100);
   });
 
   test('sorts videos by newest first', () => {
     const result = filterAndSortVideos(mockVideos, '', 'All', 'newest');
-    expect(result[0].id).toBe('2'); // June 2023
-    expect(result[2].id).toBe('1'); // Jan 2023
+    expect(result[0]!.id).toBe('2'); // June 2023
+    expect(result[2]!.id).toBe('1'); // Jan 2023
   });
 
   test('sorts videos by oldest first', () => {
     const result = filterAndSortVideos(mockVideos, '', 'All', 'oldest');
-    expect(result[0].id).toBe('1'); // Jan 2023
-    expect(result[2].id).toBe('2'); // June 2023
+    expect(result[0]!.id).toBe('1'); // Jan 2023
+    expect(result[2]!.id).toBe('2'); // June 2023
   });
 });
