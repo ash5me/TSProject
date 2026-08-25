@@ -22,7 +22,8 @@ const videos: Video[] = [
 let currentSearch = '';
 let currentFilter = 'All';
 let currentSort = 'newest';
-let isSubscribed = false;
+const subscriptionStorageKey = 'mytube-subscription-status';
+let isSubscribed = localStorage.getItem(subscriptionStorageKey) === 'true';
 
 // --- DOM Elements ---
 const videoGrid = document.getElementById('video-grid') as HTMLDivElement;
@@ -48,6 +49,12 @@ function timeAgo(date: Date): string {
   interval = seconds / 86400;
   if (interval > 1) return Math.floor(interval) + " days ago";
   return "Today";
+}
+
+function updateSubscribeButton() {
+  subscribeBtn.textContent = isSubscribed ? 'Subscribed' : 'Subscribe';
+  subscribeBtn.classList.toggle('is-danger', !isSubscribed);
+  subscribeBtn.classList.toggle('is-light', isSubscribed);
 }
 
 // --- Render Logic ---
@@ -124,15 +131,8 @@ function init() {
   // Subscribe Button
   subscribeBtn.addEventListener('click', () => {
     isSubscribed = !isSubscribed;
-    if (isSubscribed) {
-      subscribeBtn.textContent = 'Subscribed';
-      subscribeBtn.classList.remove('is-danger');
-      subscribeBtn.classList.add('is-light');
-    } else {
-      subscribeBtn.textContent = 'Subscribe';
-      subscribeBtn.classList.remove('is-light');
-      subscribeBtn.classList.add('is-danger');
-    }
+    localStorage.setItem(subscriptionStorageKey, String(isSubscribed));
+    updateSubscribeButton();
   });
 
   // YT Logo Reload
@@ -141,6 +141,7 @@ function init() {
   });
 
   // Initial Render
+  updateSubscribeButton();
   renderVideos();
 }
 
