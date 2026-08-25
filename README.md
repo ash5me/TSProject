@@ -24,3 +24,9 @@ Compile `app.ts` into JavaScript:
 tsc app.ts
 ```
 *Note :* User 'Live server' extension to run the frontend in the browser
+
+### 3. Unit tests
+
+```bash
+npm test
+```
