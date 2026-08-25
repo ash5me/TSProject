@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment & Local Configurations
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+config.json
+config.local.json
+
+# IDE & Editor Configurations
+.vscode/
+.idea/
+*.swp
+*.sublime-project
+*.sublime-workspace
+
+# OS Configurations
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Compiled JavaScript & Build Outputs
+# (Uncomment app.js if app.ts compiles directly next to it)
+app.js
+app.js.map
+dist/
+build/
+*.tsbuildinfo
+
+# Logs & Caches
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+.parcel-cache/

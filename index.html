@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TypeScript YouTube Channel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .video-card { height: 100%; transition: transform 0.2s; }
+    .video-card:hover { transform: translateY(-5px); cursor: pointer; }
+    .yt-logo { cursor: pointer; }
+    
+    /* Clamp title to 2 lines & maintain equal card height */
+    .video-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.8em; 
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar is-white has-shadow" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item yt-logo" id="yt-logo" title="Reload Page">
+        <span class="icon is-large has-text-danger">
+          <i class="fab fa-youtube fa-2x"></i>
+        </span>
+        <span class="title is-4 ml-2 mb-0">MyTube</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Fixed Channel Header -->
+  <section class="hero is-light is-small">
+    <div class="hero-body">
+      <div class="container is-flex is-align-items-center is-justify-content-space-between">
+        <div class="is-flex is-align-items-center">
+          <figure class="image is-64x64 mr-4">
+            <img class="is-rounded" src="https://ui-avatars.com/api/?name=Dev+Channel&background=random" alt="Channel Avatar">
+          </figure>
+          <div>
+            <!-- Removed .subtitle negative margin collision -->
+            <h1 class="title is-3 mb-1">Developer Channel</h1>
+            <p class="is-size-6 has-text-grey">1.2M subscribers • 42 Videos</p>
+          </div>
+        </div>
+        <button id="subscribe-btn" class="button is-danger is-rounded has-text-weight-bold">
+          Subscribe
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Controls -->
+  <section class="section pt-4 pb-4">
+    <div class="container">
+      <div class="columns is-vcentered">
+        
+        <div class="column is-4">
+          <div class="control has-icons-left">
+            <input id="search-input" class="input is-rounded" type="text" placeholder="Search videos...">
+            <span class="icon is-left"><i class="fas fa-search"></i></span>
+          </div>
+        </div>
+
+        <div class="column is-3">
+          <div class="field is-horizontal">
+            <div class="field-label is-normal"><label class="label">Filter:</label></div>
+            <div class="field-body">
+              <div class="select is-rounded is-fullwidth">
+                <select id="filter-select">
+                  <option value="All">All Categories</option>
+                  <option value="Tutorial">Tutorials</option>
+                  <option value="Vlog">Vlogs</option>
+                  <option value="Review">Reviews</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-3">
+          <div class="field is-horizontal">
+            <div class="field-label is-normal"><label class="label">Sort:</label></div>
+            <div class="field-body">
+              <div class="select is-rounded is-fullwidth">
+                <select id="sort-select">
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="views-high">Most Popular</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Videos Grid -->
+  <section class="section pt-0">
+    <div class="container">
+      <div id="video-grid" class="columns is-multiline"></div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
