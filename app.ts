@@ -24,6 +24,10 @@ let currentFilter = 'All';
 let currentSort = 'newest';
 const subscriptionStorageKey = 'mytube-subscription-status';
 let isSubscribed = localStorage.getItem(subscriptionStorageKey) === 'true';
+const themeStorageKey = 'mytube-theme';
+const savedTheme = localStorage.getItem(themeStorageKey);
+const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+let isDarkMode = savedTheme ? savedTheme === 'dark' : systemThemeQuery.matches;
 
 // --- DOM Elements ---
 const videoGrid = document.getElementById('video-grid') as HTMLDivElement;
@@ -32,6 +36,7 @@ const filterSelect = document.getElementById('filter-select') as HTMLSelectEleme
 const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
 const subscribeBtn = document.getElementById('subscribe-btn') as HTMLButtonElement;
 const ytLogo = document.getElementById('yt-logo') as HTMLAnchorElement;
+const darkModeToggle = document.getElementById('dark-mode-toggle') as HTMLInputElement;
 
 // --- Utility Functions ---
 function formatViews(views: number): string {
@@ -55,6 +60,12 @@ function updateSubscribeButton() {
   subscribeBtn.textContent = isSubscribed ? 'Subscribed' : 'Subscribe';
   subscribeBtn.classList.toggle('is-danger', !isSubscribed);
   subscribeBtn.classList.toggle('is-light', isSubscribed);
+}
+
+function updateTheme() {
+  document.documentElement.dataset.theme = isDarkMode ? 'dark' : 'light';
+  darkModeToggle.checked = isDarkMode;
+  darkModeToggle.setAttribute('aria-label', isDarkMode ? 'Disable dark mode' : 'Enable dark mode');
 }
 
 // --- Render Logic ---
@@ -110,6 +121,13 @@ function renderVideos() {
 
 // --- Event Listeners ---
 function init() {
+  if (!savedTheme) {
+    systemThemeQuery.addEventListener('change', (event) => {
+      isDarkMode = event.matches;
+      updateTheme();
+    });
+  }
+
   // Search
   searchInput.addEventListener('input', (e) => {
     currentSearch = (e.target as HTMLInputElement).value;
@@ -135,12 +153,20 @@ function init() {
     updateSubscribeButton();
   });
 
+  // Dark mode
+  darkModeToggle.addEventListener('change', () => {
+    isDarkMode = darkModeToggle.checked;
+    localStorage.setItem(themeStorageKey, isDarkMode ? 'dark' : 'light');
+    updateTheme();
+  });
+
   // YT Logo Reload
   ytLogo.addEventListener('click', () => {
     window.location.reload();
   });
 
   // Initial Render
+  updateTheme();
   updateSubscribeButton();
   renderVideos();
 }

@@ -7,6 +7,127 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      color-scheme: light;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+      }
+    }
+
+    [data-theme="dark"] {
+      --background: #17191c;
+      --surface: #24272b;
+      --text: #f1f3f5;
+      --muted-text: #b8c0c8;
+      --border: #3b4148;
+      color-scheme: dark;
+    }
+
+    [data-theme="light"] {
+      --background: #ffffff;
+      --surface: #ffffff;
+      --text: #363636;
+      --muted-text: #7a7a7a;
+      --border: #dbdbdb;
+      color-scheme: light;
+    }
+
+    body {
+      background: var(--background, #ffffff);
+      color: var(--text, #363636);
+    }
+
+    [data-theme="dark"] .navbar,
+    [data-theme="dark"] .card,
+    [data-theme="dark"] .input,
+    [data-theme="dark"] .select select {
+      background-color: var(--surface);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    [data-theme="dark"] .hero.is-light {
+      background-color: #202327;
+    }
+
+    [data-theme="dark"] .has-text-grey {
+      color: var(--muted-text) !important;
+    }
+
+    [data-theme="dark"] .tag.is-light,
+    [data-theme="dark"] .button.is-light {
+      background-color: #3a4047;
+      color: var(--text);
+    }
+
+    [data-theme="dark"] .label,
+    [data-theme="dark"] .title {
+      color: var(--text);
+    }
+
+    .theme-toggle {
+      align-items: center;
+      background: #dfe5ea;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      height: 2rem;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 0 0.45rem;
+      position: relative;
+      width: 4.25rem;
+    }
+
+    .theme-toggle input {
+      height: 1px;
+      opacity: 0;
+      position: absolute;
+      width: 1px;
+    }
+
+    .theme-toggle:focus-within {
+      box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);
+    }
+
+    .theme-toggle-icon {
+      align-items: center;
+      color: #5f6b76;
+      display: inline-flex;
+      font-size: 0.8rem;
+      height: 1rem;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      width: 1rem;
+    }
+
+    .theme-toggle-thumb {
+      background: #ffffff;
+      border-radius: 50%;
+      height: 1.5rem;
+      left: 0.25rem;
+      position: absolute;
+      top: 0.25rem;
+      transition: transform 0.2s ease;
+      width: 1.5rem;
+    }
+
+    .theme-toggle input:checked ~ .theme-toggle-thumb {
+      transform: translateX(2.25rem);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: #363c45;
+    }
+
+    [data-theme="dark"] .theme-toggle-icon {
+      color: #d6dde5;
+    }
+
     .video-card { height: 100%; transition: transform 0.2s; }
     .video-card:hover { transform: translateY(-5px); cursor: pointer; }
     .yt-logo { cursor: pointer; }
@@ -27,13 +148,25 @@
 
   <!-- Navbar -->
   <nav class="navbar is-white has-shadow" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item yt-logo" id="yt-logo" title="Reload Page">
-        <span class="icon is-large has-text-danger">
-          <i class="fab fa-youtube fa-2x"></i>
-        </span>
-        <span class="title is-4 ml-2 mb-0">MyTube</span>
-      </a>
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item yt-logo" id="yt-logo" title="Reload Page">
+          <span class="icon is-large has-text-danger">
+            <i class="fab fa-youtube fa-2x"></i>
+          </span>
+          <span class="title is-4 ml-2 mb-0">MyTube</span>
+        </a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <label class="theme-toggle" for="dark-mode-toggle" title="Toggle dark mode">
+            <input id="dark-mode-toggle" type="checkbox" aria-label="Toggle dark mode">
+            <span class="theme-toggle-icon"><i class="fas fa-lightbulb" aria-hidden="true"></i></span>
+            <span class="theme-toggle-icon"><i class="fas fa-moon" aria-hidden="true"></i></span>
+            <span class="theme-toggle-thumb" aria-hidden="true"></span>
+          </label>
+        </div>
+      </div>
     </div>
   </nav>
 
