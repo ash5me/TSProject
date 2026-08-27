@@ -43,6 +43,7 @@
     [data-theme="dark"] .navbar,
     [data-theme="dark"] .card,
     [data-theme="dark"] .input,
+    [data-theme="dark"] .box,
     [data-theme="dark"] .select select {
       background-color: var(--surface);
       color: var(--text);
@@ -142,6 +143,13 @@
       min-height: 2.8em; 
       line-height: 1.4;
     }
+
+    /* Video Player Styling */
+    .player-container video {
+      border-radius: 8px;
+      width: 100%;
+      background-color: #000;
+    }
   </style>
 </head>
 <body>
@@ -170,80 +178,117 @@
     </div>
   </nav>
 
-  <!-- Fixed Channel Header -->
-  <section class="hero is-light is-small">
-    <div class="hero-body">
-      <div class="container is-flex is-align-items-center is-justify-content-space-between">
-        <div class="is-flex is-align-items-center">
-          <figure class="image is-64x64 mr-4">
-            <img class="is-rounded" src="https://ui-avatars.com/api/?name=Dev+Channel&background=random" alt="Channel Avatar">
-          </figure>
-          <div>
-            <!-- Removed .subtitle negative margin collision -->
-            <h1 class="title is-3 mb-1">Developer Channel</h1>
-            <p class="is-size-6 has-text-grey">1.2M subscribers • 42 Videos</p>
+  <!-- MAIN GRID VIEW (Channel Header + Controls + Video List) -->
+  <div id="grid-view">
+    <!-- Fixed Channel Header -->
+    <section class="hero is-light is-small">
+      <div class="hero-body">
+        <div class="container is-flex is-align-items-center is-justify-content-space-between">
+          <div class="is-flex is-align-items-center">
+            <figure class="image is-64x64 mr-4">
+              <img class="is-rounded" src="https://ui-avatars.com/api/?name=Dev+Channel&background=random" alt="Channel Avatar">
+            </figure>
+            <div>
+              <h1 class="title is-3 mb-1">Developer Channel</h1>
+              <p class="is-size-6 has-text-grey">1.2M subscribers • 42 Videos</p>
+            </div>
+          </div>
+          <button id="subscribe-btn" class="button is-danger is-rounded has-text-weight-bold">
+            Subscribe
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="section pt-4 pb-4">
+      <div class="container">
+        <div class="columns is-vcentered">
+          
+          <div class="column is-4">
+            <div class="control has-icons-left">
+              <input id="search-input" class="input is-rounded" type="text" placeholder="Search videos...">
+              <span class="icon is-left"><i class="fas fa-search"></i></span>
+            </div>
+          </div>
+
+          <div class="column is-3">
+            <div class="field is-horizontal">
+              <div class="field-label is-normal"><label class="label">Filter:</label></div>
+              <div class="field-body">
+                <div class="select is-rounded is-fullwidth">
+                  <select id="filter-select">
+                    <option value="All">All Categories</option>
+                    <option value="Tutorial">Tutorials</option>
+                    <option value="Vlog">Vlogs</option>
+                    <option value="Review">Reviews</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-3">
+            <div class="field is-horizontal">
+              <div class="field-label is-normal"><label class="label">Sort:</label></div>
+              <div class="field-body">
+                <div class="select is-rounded is-fullwidth">
+                  <select id="sort-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="views-high">Most Popular</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Videos Grid -->
+    <section class="section pt-0">
+      <div class="container">
+        <div id="video-grid" class="columns is-multiline"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- YOUTUBE WATCH VIEW (Hidden by Default) -->
+  <div id="watch-view" class="section is-hidden pt-4">
+    <div class="container">
+      <button id="back-btn" class="button is-light mb-4 is-rounded">
+        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+        <span>Back to Channel</span>
+      </button>
+
+      <div class="columns">
+        <!-- Primary Player View -->
+        <div class="column is-8">
+          <div class="player-container mb-3">
+            <figure class="image is-16by9">
+              <video id="main-video-player" controls class="has-ratio">
+                <source id="video-source" src="" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </figure>
+          </div>
+          <h1 id="watch-title" class="title is-4 mb-2"></h1>
+          <p id="watch-meta" class="subtitle is-6 has-text-grey mb-3"></p>
+          <div class="box">
+            <p id="watch-description"></p>
           </div>
         </div>
-        <button id="subscribe-btn" class="button is-danger is-rounded has-text-weight-bold">
-          Subscribe
-        </button>
-      </div>
-    </div>
-  </section>
 
-  <!-- Controls -->
-  <section class="section pt-4 pb-4">
-    <div class="container">
-      <div class="columns is-vcentered">
-        
+        <!-- Sidebar / Suggested Videos -->
         <div class="column is-4">
-          <div class="control has-icons-left">
-            <input id="search-input" class="input is-rounded" type="text" placeholder="Search videos...">
-            <span class="icon is-left"><i class="fas fa-search"></i></span>
-          </div>
+          <h2 class="title is-5 mb-3">Up Next</h2>
+          <div id="sidebar-video-list"></div>
         </div>
-
-        <div class="column is-3">
-          <div class="field is-horizontal">
-            <div class="field-label is-normal"><label class="label">Filter:</label></div>
-            <div class="field-body">
-              <div class="select is-rounded is-fullwidth">
-                <select id="filter-select">
-                  <option value="All">All Categories</option>
-                  <option value="Tutorial">Tutorials</option>
-                  <option value="Vlog">Vlogs</option>
-                  <option value="Review">Reviews</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-3">
-          <div class="field is-horizontal">
-            <div class="field-label is-normal"><label class="label">Sort:</label></div>
-            <div class="field-body">
-              <div class="select is-rounded is-fullwidth">
-                <select id="sort-select">
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="views-high">Most Popular</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
-  </section>
-
-  <!-- Videos Grid -->
-  <section class="section pt-0">
-    <div class="container">
-      <div id="video-grid" class="columns is-multiline"></div>
-    </div>
-  </section>
+  </div>
 
   <script src="app.js"></script>
 </body>
