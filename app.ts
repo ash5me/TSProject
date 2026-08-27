@@ -15,8 +15,8 @@ const videos: Video[] = [
   { 
     id: '1', 
     title: 'Beach day vlog', 
-    thumbnail: 'https://picsum.photos/seed/ts/640/360', 
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    thumbnail: 'https://picsum.photos/seed/ts/640/360',
+    videoUrl: 'assets/videos/waves.mp4',
     description: 'Spending a relaxing day down at the sunny beach! Relax and enjoy the sound of the ocean waves.',
     views: 154000, 
     uploadDate: new Date('2023-10-01'), 
@@ -25,8 +25,8 @@ const videos: Video[] = [
   { 
     id: '2', 
     title: 'Millionaire yatch vlog', 
-    thumbnail: 'https://picsum.photos/seed/vlog1/640/360', 
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    thumbnail: 'https://picsum.photos/seed/vlog1/640/360',
+    videoUrl: 'assets/videos/person.mp4',
     description: 'A full tour of a luxury yacht while exploring open waters. Behind the scenes of high life travel.',
     views: 89000, 
     uploadDate: new Date('2023-10-15'), 
@@ -35,8 +35,8 @@ const videos: Video[] = [
   { 
     id: '3', 
     title: 'Skyscraper everyday fit', 
-    thumbnail: 'https://picsum.photos/seed/mac/640/360', 
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    thumbnail: 'https://picsum.photos/seed/mac/640/360',
+    videoUrl: 'assets/videos/motorcycle.mp4',
     description: 'Reviewing urban streetwear and outfits suited for working in high-rise skyscraper offices.',
     views: 320000, 
     uploadDate: new Date('2023-11-05'), 
@@ -45,8 +45,8 @@ const videos: Video[] = [
   { 
     id: '4', 
     title: 'Life of an farmer', 
-    thumbnail: 'https://picsum.photos/seed/bulma/640/360', 
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    thumbnail: 'https://picsum.photos/seed/bulma/640/360',
+    videoUrl: 'assets/videos/honeybee.mp4',
     description: 'An early morning look into daily operations on a self-sustaining organic farm.',
     views: 45000, 
     uploadDate: new Date('2023-09-20'), 
@@ -55,8 +55,8 @@ const videos: Video[] = [
   { 
     id: '5', 
     title: 'Solo traveller guide', 
-    thumbnail: 'https://picsum.photos/seed/desk/640/360', 
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    thumbnail: 'https://picsum.photos/seed/desk/640/360',
+    videoUrl: 'assets/videos/squirrel.mp4',
     description: 'Essential safety and budget tips when traveling abroad completely on your own.',
     views: 112000, 
     uploadDate: new Date('2023-12-01'), 
@@ -65,8 +65,8 @@ const videos: Video[] = [
   { 
     id: '6', 
     title: 'Dark forest alone in the dark?', 
-    thumbnail: 'https://picsum.photos/seed/key/640/360', 
-    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoywatches.mp4',
+    thumbnail: 'https://picsum.photos/seed/key/640/360',
+    videoUrl: 'assets/videos/lamp.mp4',
     description: 'Nighttime gear test and review deep inside the quiet woods.',
     views: 67000, 
     uploadDate: new Date('2023-12-10'), 
@@ -74,12 +74,14 @@ const videos: Video[] = [
   },
 ];
 
-// --- State ---
+// --- Application State ---
 let currentSearch = '';
 let currentFilter = 'All';
 let currentSort = 'newest';
+
 const subscriptionStorageKey = 'mytube-subscription-status';
 let isSubscribed = localStorage.getItem(subscriptionStorageKey) === 'true';
+
 const themeStorageKey = 'mytube-theme';
 const savedTheme = localStorage.getItem(themeStorageKey);
 const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -97,7 +99,7 @@ const subscribeBtn = document.getElementById('subscribe-btn') as HTMLButtonEleme
 const ytLogo = document.getElementById('yt-logo') as HTMLAnchorElement;
 const darkModeToggle = document.getElementById('dark-mode-toggle') as HTMLInputElement;
 
-// Watch View Elements
+// Watch Page DOM Elements
 const backBtn = document.getElementById('back-btn') as HTMLButtonElement;
 const mainVideoPlayer = document.getElementById('main-video-player') as HTMLVideoElement;
 const videoSource = document.getElementById('video-source') as HTMLSourceElement;
@@ -106,7 +108,7 @@ const watchMeta = document.getElementById('watch-meta') as HTMLParagraphElement;
 const watchDescription = document.getElementById('watch-description') as HTMLParagraphElement;
 const sidebarVideoList = document.getElementById('sidebar-video-list') as HTMLDivElement;
 
-// --- Utility Functions ---
+// --- Utility Helpers ---
 function formatViews(views: number): string {
   if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M';
   if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
@@ -136,33 +138,61 @@ function updateTheme() {
   darkModeToggle.setAttribute('aria-label', isDarkMode ? 'Disable dark mode' : 'Enable dark mode');
 }
 
-// --- Video Navigation Logic ---
-function openWatchPage(video: Video) {
-  // 1. Update Player Source & Load
+// --- View Router & Navigation Logic ---
+function openWatchPage(video: Video, updateHash = true) {
+  // Update Video Source & Playback
   videoSource.src = video.videoUrl;
+  mainVideoPlayer.muted = true;
   mainVideoPlayer.load();
   mainVideoPlayer.play().catch(() => {
-    // Graceful fallback if browser blocks auto-play
+    // Graceful handling for browser autoplay policies
   });
 
-  // 2. Populate Info
+  // Set Details
   watchTitle.textContent = video.title;
   watchMeta.textContent = `${formatViews(video.views)} views • ${timeAgo(video.uploadDate)} • ${video.category}`;
   watchDescription.textContent = video.description;
 
-  // 3. Render Sidebar / Suggested Videos
+  // Render Sidebar
   renderSidebar(video.id);
 
-  // 4. Toggle Views
+  // Switch View Visibility
   gridView.classList.add('is-hidden');
   watchView.classList.remove('is-hidden');
   window.scrollTo(0, 0);
+
+  // Sync state to URL hash
+  if (updateHash) {
+    window.location.hash = `watch?id=${video.id}`;
+  }
 }
 
-function closeWatchPage() {
+function closeWatchPage(updateHash = true) {
   mainVideoPlayer.pause();
   watchView.classList.add('is-hidden');
   gridView.classList.remove('is-hidden');
+
+  // Clear state from URL hash
+  if (updateHash) {
+    window.location.hash = '';
+  }
+}
+
+function handleRouting() {
+  const hash = window.location.hash;
+  
+  if (hash.startsWith('#watch?id=')) {
+    const videoId = hash.split('id=')[1];
+    const targetVideo = videos.find(v => v.id === videoId);
+
+    if (targetVideo) {
+      openWatchPage(targetVideo, false);
+      return;
+    }
+  }
+
+  // Fallback to Grid view when hash is empty or invalid
+  closeWatchPage(false);
 }
 
 function renderSidebar(currentVideoId: string) {
@@ -194,7 +224,7 @@ function renderSidebar(currentVideoId: string) {
   });
 }
 
-// --- Render Logic ---
+// --- Home Grid Render Logic ---
 function renderVideos() {
   // 1. Filter
   let filteredVideos = videos.filter(video => {
@@ -213,7 +243,7 @@ function renderVideos() {
     }
   });
 
-  // 3. Render to DOM
+  // 3. Render
   videoGrid.innerHTML = '';
   
   if (filteredVideos.length === 0) {
@@ -241,7 +271,6 @@ function renderVideos() {
       </div>
     `;
 
-    // Click event to open video watch page
     cardCol.querySelector('.video-card')?.addEventListener('click', () => {
       openWatchPage(video);
     });
@@ -250,7 +279,7 @@ function renderVideos() {
   });
 }
 
-// --- Event Listeners ---
+// --- Initialization & Event Listeners ---
 function init() {
   if (!savedTheme) {
     systemThemeQuery.addEventListener('change', (event) => {
@@ -259,56 +288,60 @@ function init() {
     });
   }
 
-  // Search
+  // Search Input
   searchInput.addEventListener('input', (e) => {
     currentSearch = (e.target as HTMLInputElement).value;
     renderVideos();
   });
 
-  // Filter
+  // Category Filter Select
   filterSelect.addEventListener('change', (e) => {
     currentFilter = (e.target as HTMLSelectElement).value;
     renderVideos();
   });
 
-  // Sort
+  // Sort Order Select
   sortSelect.addEventListener('change', (e) => {
     currentSort = (e.target as HTMLSelectElement).value;
     renderVideos();
   });
 
-  // Subscribe Button
+  // Subscription Button
   subscribeBtn.addEventListener('click', () => {
     isSubscribed = !isSubscribed;
     localStorage.setItem(subscriptionStorageKey, String(isSubscribed));
     updateSubscribeButton();
   });
 
-  // Dark mode
+  // Dark Mode Switch
   darkModeToggle.addEventListener('change', () => {
     isDarkMode = darkModeToggle.checked;
     localStorage.setItem(themeStorageKey, isDarkMode ? 'dark' : 'light');
     updateTheme();
   });
 
-  // Back Button Event
-  backBtn.addEventListener('click', closeWatchPage);
+  // Back Button
+  backBtn.addEventListener('click', () => closeWatchPage(true));
 
-  // YT Logo Click - Closes watch page if active or reloads
+  // Logo Navigation
   ytLogo.addEventListener('click', (e) => {
     e.preventDefault();
-    if (!watchView.classList.contains('is-hidden')) {
-      closeWatchPage();
+    if (window.location.hash) {
+      window.location.hash = '';
     } else {
       window.location.reload();
     }
   });
 
-  // Initial Render
+  // Hash Navigation Events
+  window.addEventListener('hashchange', handleRouting);
+
+  // Initial State Hydration
   updateTheme();
   updateSubscribeButton();
   renderVideos();
+  handleRouting();
 }
 
-// Boot application
+// Execute app
 init();

@@ -150,6 +150,14 @@
       width: 100%;
       background-color: #000;
     }
+
+    .watch-description-box {
+      padding: 1rem 0;
+    }
+
+    .watch-meta {
+      margin-top: 0 !important;
+    }
   </style>
 </head>
 <body>
@@ -268,15 +276,15 @@
         <div class="column is-8">
           <div class="player-container mb-3">
             <figure class="image is-16by9">
-              <video id="main-video-player" controls class="has-ratio">
+              <video id="main-video-player" controls autoplay muted playsinline class="has-ratio">
                 <source id="video-source" src="" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
             </figure>
           </div>
           <h1 id="watch-title" class="title is-4 mb-2"></h1>
-          <p id="watch-meta" class="subtitle is-6 has-text-grey mb-3"></p>
-          <div class="box">
+          <p id="watch-meta" class="subtitle is-6 has-text-grey mb-3 watch-meta"></p>
+          <div class="box watch-description-box">
             <p id="watch-description"></p>
           </div>
         </div>
